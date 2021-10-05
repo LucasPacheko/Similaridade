@@ -50,19 +50,19 @@ class Similarity:
 
         return dp[m][n]
 
-    def similar(self, str, pesquisarPor='Descrição', caseSensitive: bool = False):
-        self.df['temp'] = self.df[pesquisarPor].apply(lambda a: self.__similarity(str, a, caseSensitive))
+    def similar(self,df_linhas, chave, coluna='text', caseSensitive: bool = False):
+        df_linhas['temp'] = df_linhas[coluna].apply(lambda a: self.__similarity(chave, a, caseSensitive))
 
-        return self.df.nlargest(10, 'temp')
+        return df_linhas.nlargest(10, 'temp')
 
 
 if __name__ == '__main__':
     sim = Similarity()
-    print(sim.similar('zap-7'))
+    # print(sim.similar('zap-7'))
 
     sim.load_from('chaves.csv')
 
-    print(sim.similar('10@ nome kalls',pesquisarPor='chaves'))
+    # print(sim.similar('10@ nome kalls',pesquisarPor='chaves'))
 
 
 
