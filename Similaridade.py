@@ -12,7 +12,9 @@ class Similarity:
     def load_from(self,file, encoding= 'windows-1252'):
         self.df = pd.read_csv(file, encoding = encoding)
         self.df = self.df.astype(str)
-
+    def similarity(self, s1: str, s2: str, caseSensitive):
+        return self.__similarity( s1, s2, caseSensitive)
+        
     def __similarity(self, s1: str, s2: str, caseSensitive):
         longer = s1
         shorter = s2
@@ -22,7 +24,26 @@ class Similarity:
         lenLong = len(longer)
         if lenLong == 0:
             return 1.0
-        return (lenLong - self.__editDistance(longer, shorter, caseSensitive)) / lenLong
+
+        score = 0.0
+        key_list = s1.split(" ")
+        targ_list = s2.split(" ")
+        for keyi in key_list:
+            best = 0 
+            for targ in targ_list:
+
+                longer = keyi
+                shorter = targ
+                if len(keyi ) < len(targ):
+                    longer = targ
+                    shorter = keyi
+
+                lenLong = len(longer)
+                score_prov = (lenLong - self.__editDistance(longer, shorter, caseSensitive)) / lenLong
+                if score_prov>best:
+                    best = score_prov
+            score+=best
+        return score/(len(key_list))
 
     def __editDistance(self, s1: str, s2: str, caseSensitive):
         if not caseSensitive:
@@ -51,7 +72,7 @@ class Similarity:
         return dp[m][n]
 
     def similar(self,df_linhas, chave, coluna='text', caseSensitive: bool = False):
-        df_linhas['temp'] = df_linhas[coluna].apply(lambda a: self.__similarity(chave, a, caseSensitive))
+        df_linhas['temp'] = df_linhas[coluna].apply(lambda a: self.__similarity(chave,a, caseSensitive))
 
         return df_linhas.nlargest(10, 'temp')
 
@@ -60,9 +81,9 @@ if __name__ == '__main__':
     sim = Similarity()
     # print(sim.similar('zap-7'))
 
-    sim.load_from('chaves.csv')
+    # sim.load_from('chaves.csv')
 
-    # print(sim.similar('10@ nome kalls',pesquisarPor='chaves'))
+    print(sim.similarity('CREATININA', 'CREATININA - (LABORATORIO EXAMES URGENCIA E EMERGENCIA)' ,False))
 
 
 
