@@ -7,8 +7,6 @@ class Similarity:
         self.df = pd.DataFrame()
         if(os.path.isfile(file)):
             self.load_from(file,encoding= encoding)
-        else:
-            print('Arquivo não encontrado')
     def load_from(self,file, encoding= 'windows-1252'):
         self.df = pd.read_csv(file, encoding = encoding)
         self.df = self.df.astype(str)
